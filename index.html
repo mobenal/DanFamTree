@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Daniels Family Tree</title>
+  <title>Our Family Tree & Heritage</title>
   
-  <!-- Leaflet CSS for Interactive Map -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
   <style>
@@ -282,13 +281,11 @@
   <h1>Our Family Tree</h1>
   <p class="subtitle">Click on any family member to discover their story!</p>
 
-  <!-- Interactive Visual Tree -->
   <div class="tree">
     <ul>
       <li>
         <div style="display: flex; gap: 60px; justify-content: center;">
           
-          <!-- Steven & Sonya Branch -> Richard -->
           <div class="tree" style="padding:0;">
             <ul>
               <li>
@@ -317,7 +314,6 @@
             </ul>
           </div>
 
-          <!-- Michael & Dalia Branch -> Isabella -->
           <div class="tree" style="padding:0;">
             <ul>
               <li>
@@ -348,7 +344,6 @@
 
         </div>
 
-        <!-- Merged Connector from Richard & Isabella -> Children -->
         <ul style="padding-top: 0;">
           <li style="padding-top: 0;">
             <div style="position: relative; width: 330px; height: 20px; margin: 0 auto;">
@@ -384,7 +379,6 @@
     </ul>
   </div>
 
-  <!-- Modal for Member Details -->
   <div class="modal-overlay" id="modal" onclick="closeModal(event)">
     <div class="modal-content" onclick="event.stopPropagation()">
       <span class="close-btn" onclick="closeModal()">&times;</span>
@@ -396,12 +390,10 @@
         </div>
       </div>
 
-      <!-- Tag triggers map centering on click -->
       <div class="heritage-tag" id="m-heritage" onclick="recenterMap()">
         <span id="m-flag">🇬🇧</span> <span id="m-location">Location</span> 📍
       </div>
 
-      <!-- Interactive Map Box -->
       <div id="map-container"></div>
 
       <h4>Fun Facts & Heritage:</h4>
@@ -409,11 +401,10 @@
     </div>
   </div>
 
-  <!-- Leaflet JavaScript -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <script>
-    const basePath = "/Users/richarddaniels/Desktop/FTP/";
+    const basePath = "./";
 
     let map = null;
     let currentMarker = null;
@@ -570,12 +561,10 @@
 
       document.getElementById('modal').style.display = 'flex';
 
-      // Initialize or update Leaflet map
       setTimeout(() => {
         initMap();
         map.invalidateSize();
         
-        // Zoom out for international location (Tehran), closer for local UK locations
         const zoomLevel = person.location.includes("Iran") ? 6 : 12;
         map.setView(activeCoords, zoomLevel);
 
