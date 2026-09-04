@@ -63,7 +63,7 @@
       text-align: center;
       list-style-type: none;
       position: relative;
-      padding: 20px 15px 0 15px;
+      padding: 20px 10px 0 10px;
       transition: all 0.5s;
     }
 
@@ -116,7 +116,7 @@
 
     .couple {
       display: flex;
-      gap: 40px;
+      gap: 15px;
       justify-content: center;
       position: relative;
     }
@@ -124,9 +124,9 @@
     .couple .person-card:first-child::after {
       content: '';
       position: absolute;
-      top: 45px;
-      right: -40px;
-      width: 40px;
+      top: 40px;
+      right: -15px;
+      width: 15px;
       height: 3px;
       background-color: var(--line-color);
       z-index: 1;
@@ -136,8 +136,8 @@
       background: var(--card-bg);
       border: 3px solid var(--border-color);
       border-radius: 12px;
-      padding: 12px;
-      width: 120px;
+      padding: 10px;
+      width: 110px;
       text-align: center;
       cursor: pointer;
       transition: transform 0.2s, box-shadow 0.2s;
@@ -152,11 +152,16 @@
     }
 
     .person-avatar {
-      width: 65px;
-      height: 65px;
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
-      margin: 0 auto 8px;
+      margin: 0 auto 6px;
       overflow: hidden;
+      background-color: #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
     }
 
     .person-avatar img,
@@ -169,12 +174,12 @@
 
     .person-name {
       font-weight: bold;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       margin-bottom: 2px;
     }
 
     .person-relation {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       color: #666;
     }
 
@@ -231,6 +236,11 @@
       border-radius: 50%;
       overflow: hidden;
       flex-shrink: 0;
+      background-color: #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
     }
 
     /* INTERACTIVE HERITAGE TAG */
@@ -284,19 +294,19 @@
   <div class="tree">
     <ul>
       <li>
-        <div style="display: flex; gap: 60px; justify-content: center;">
+        <div style="display: flex; gap: 40px; justify-content: center;">
           
           <div class="tree" style="padding:0;">
             <ul>
               <li>
                 <div class="couple">
                   <div class="person-card" onclick="showDetails('p1')">
-                    <div class="person-avatar"><img src="./SMD.jpeg" alt="Steven Daniels"></div>
+                    <div class="person-avatar"><img src="./SMD.jpeg" alt="Steven Daniels" onerror="this.outerHTML='👴'"></div>
                     <div class="person-name">Steven Daniels</div>
                     <div class="person-relation">Grandpa</div>
                   </div>
                   <div class="person-card" onclick="showDetails('p2')">
-                    <div class="person-avatar"><img src="./SD.jpeg" alt="Sonya Daniels"></div>
+                    <div class="person-avatar"><img src="./SD.jpeg" alt="Sonya Daniels" onerror="this.outerHTML='👵'"></div>
                     <div class="person-name">Sonya Daniels</div>
                     <div class="person-relation">Savta</div>
                   </div>
@@ -304,9 +314,30 @@
                 <ul>
                   <li>
                     <div class="person-card" onclick="showDetails('p3')">
-                      <div class="person-avatar"><img src="./RAD.jpeg" alt="Richard Daniels"></div>
+                      <div class="person-avatar"><img src="./RAD.jpeg" alt="Richard Daniels" onerror="this.outerHTML='👨‍⚕️'"></div>
                       <div class="person-name">Richard Daniels</div>
                       <div class="person-relation">Daddy</div>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="couple">
+                      <div class="person-card" onclick="showDetails('p10')">
+                        <div class="person-avatar"><img src="./JD.jpeg" alt="Joshua Daniels" onerror="this.outerHTML='👨'"></div>
+                        <div class="person-name">Joshua Daniels</div>
+                        <div class="person-relation">Uncle Josh</div>
+                      </div>
+                      <div class="person-card" onclick="showDetails('p11')">
+                        <div class="person-avatar"><img src="./HD.jpeg" alt="Hannah Daniels" onerror="this.outerHTML='👩'"></div>
+                        <div class="person-name">Hannah Daniels</div>
+                        <div class="person-relation">Auntie Hannah</div>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="person-card" onclick="showDetails('p12')">
+                      <div class="person-avatar"><img src="./ZD.jpeg" alt="Zoe Daniels" onerror="this.outerHTML='👩'"></div>
+                      <div class="person-name">Zoe Daniels</div>
+                      <div class="person-relation">Auntie Zoe</div>
                     </div>
                   </li>
                 </ul>
@@ -319,12 +350,12 @@
               <li>
                 <div class="couple">
                   <div class="person-card" onclick="showDetails('p8')">
-                    <div class="person-avatar"><img src="./MH.jpeg" alt="Michael Hakimian"></div>
+                    <div class="person-avatar"><img src="./MH.jpeg" alt="Michael Hakimian" onerror="this.outerHTML='👴'"></div>
                     <div class="person-name">Michael Hakimian</div>
                     <div class="person-relation">Baba</div>
                   </div>
                   <div class="person-card" onclick="showDetails('p9')">
-                    <div class="person-avatar"><img src="./DH.jpeg" alt="Dalia Hakimian"></div>
+                    <div class="person-avatar"><img src="./DH.jpeg" alt="Dalia Hakimian" onerror="this.outerHTML='👵'"></div>
                     <div class="person-name">Dalia Hakimian</div>
                     <div class="person-relation">Nonna</div>
                   </div>
@@ -332,9 +363,44 @@
                 <ul>
                   <li>
                     <div class="person-card" onclick="showDetails('p4')">
-                      <div class="person-avatar"><img src="./ISD.jpeg" alt="Isabella Daniels"></div>
+                      <div class="person-avatar"><img src="./ISD.jpeg" alt="Isabella Daniels" onerror="this.outerHTML='👩'"></div>
                       <div class="person-name">Isabella Daniels</div>
                       <div class="person-relation">Mummy</div>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="couple">
+                      <div class="person-card" onclick="showDetails('p13')">
+                        <div class="person-avatar"><img src="./DH2.jpeg" alt="Danny Hakimian" onerror="this.outerHTML='👨'"></div>
+                        <div class="person-name">Danny Hakimian</div>
+                        <div class="person-relation">Doi Danny</div>
+                      </div>
+                      <div class="person-card" onclick="showDetails('p14')">
+                        <div class="person-avatar"><img src="./EH.jpeg" alt="Evette Hakimian" onerror="this.outerHTML='👩'"></div>
+                        <div class="person-name">Evette Hakimian</div>
+                        <div class="person-relation">Auntie Evette</div>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="couple">
+                      <div class="person-card" onclick="showDetails('p15')">
+                        <div class="person-avatar"><img src="./SH.jpeg" alt="Sammy Hakimian" onerror="this.outerHTML='👨'"></div>
+                        <div class="person-name">Sammy Hakimian</div>
+                        <div class="person-relation">Uncle Sam</div>
+                      </div>
+                      <div class="person-card" onclick="showDetails('p16')">
+                        <div class="person-avatar"><img src="./BH.jpeg" alt="Britney Hakimian" onerror="this.outerHTML='👩'"></div>
+                        <div class="person-name">Britney Hakimian</div>
+                        <div class="person-relation">Auntie Brit</div>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="person-card" onclick="showDetails('p17')">
+                      <div class="person-avatar"><img src="./SO.jpeg" alt="Sofia Hakimian" onerror="this.outerHTML='👩'"></div>
+                      <div class="person-name">Sofia Hakimian</div>
+                      <div class="person-relation">Bia</div>
                     </div>
                   </li>
                 </ul>
@@ -352,21 +418,21 @@
             <ul>
               <li>
                 <div class="person-card" onclick="showDetails('p5')">
-                  <div class="person-avatar"><img src="./JSD.jpeg" alt="Jesse Daniels"></div>
+                  <div class="person-avatar"><img src="./JSD.jpeg" alt="Jesse Daniels" onerror="this.outerHTML='👦'"></div>
                   <div class="person-name">Jesse Daniels</div>
                   <div class="person-relation">First son</div>
                 </div>
               </li>
               <li>
                 <div class="person-card" onclick="showDetails('p6')">
-                  <div class="person-avatar"><img src="./JID.jpeg" alt="Jonah Daniels"></div>
+                  <div class="person-avatar"><img src="./JID.jpeg" alt="Jonah Daniels" onerror="this.outerHTML='👦'"></div>
                   <div class="person-name">Jonah Daniels</div>
                   <div class="person-relation">Second son</div>
                 </div>
               </li>
               <li>
                 <div class="person-card" onclick="showDetails('p7')">
-                  <div class="person-avatar"><img src="./JJd.jpeg" alt="Judah Daniels"></div>
+                  <div class="person-avatar"><img src="./JJd.jpeg" alt="Judah Daniels" onerror="this.outerHTML='👶'"></div>
                   <div class="person-name">Judah Daniels</div>
                   <div class="person-relation">Third son</div>
                 </div>
@@ -476,6 +542,45 @@
           "Works hard taking care of kids as a doctor."
         ]
       },
+      p10: {
+        name: "Joshua Daniels",
+        relation: "Uncle Josh",
+        image: basePath + "JD.jpeg",
+        flag: "🇬🇧",
+        location: "Borehamwood, UK",
+        coords: [51.6578, -0.2731],
+        facts: [
+          "Master of accounting and spreadsheeting.",
+          "Enjoys hosting family barbecues.",
+          "Great at solving puzzle games."
+        ]
+      },
+      p11: {
+        name: "Hannah Daniels",
+        relation: "Auntie Hannah",
+        image: basePath + "HD.jpeg",
+        flag: "🇬🇧",
+        location: "Borehamwood, UK",
+        coords: [51.6578, -0.2731],
+        facts: [
+          "Loves baking delicious birthday treats.",
+          "Enjoys interior design and crafting.",
+          "Always bringing great energy to gatherings."
+        ]
+      },
+      p12: {
+        name: "Zoe Daniels",
+        relation: "Auntie Zoe",
+        image: basePath + "ZD.jpeg",
+        flag: "🇬🇧",
+        location: "West Hampstead, UK",
+        coords: [51.5469, -0.1912],
+        facts: [
+          "Loves helping people as an occupational therapist.",
+          "Passionate about music and fitness.",
+          "The coolest auntie in town!"
+        ]
+      },
       p4: {
         name: "Isabella Daniels",
         relation: "Mummy",
@@ -487,6 +592,71 @@
           "Works as a marketing director.",
           "Plans awesome family trips and outings.",
           "Loves reading and outdoor family walks."
+        ]
+      },
+      p13: {
+        name: "Danny Hakimian",
+        relation: "Doi Danny",
+        image: basePath + "DH2.jpeg",
+        flag: "🇬🇧",
+        location: "Golders Green, UK",
+        coords: [51.5724, -0.1997],
+        facts: [
+          "Loves sports and competitive trivia night.",
+          "Always knows the best restaurants in town.",
+          "Great at keeping everyone laughing."
+        ]
+      },
+      p14: {
+        name: "Evette Hakimian",
+        relation: "Auntie Evette",
+        image: basePath + "EH.jpeg",
+        flag: "🇬🇧",
+        location: "Golders Green, UK",
+        coords: [51.5724, -0.1997],
+        facts: [
+          "Loves travel and exploring new cities.",
+          "Expert at organized event planning.",
+          "Super warm and hospitable host."
+        ]
+      },
+      p15: {
+        name: "Sammy Hakimian",
+        relation: "Uncle Sam",
+        image: basePath + "SH.jpeg",
+        flag: "🇬🇧",
+        location: "Hampstead, UK",
+        coords: [51.5559, -0.1762],
+        facts: [
+          "Huge tech and gadget enthusiast.",
+          "Loves morning coffee and weekend runs.",
+          "Always down for board games."
+        ]
+      },
+      p16: {
+        name: "Britney Hakimian",
+        relation: "Auntie Brit",
+        image: basePath + "BH.jpeg",
+        flag: "🇬🇧",
+        location: "Hampstead, UK",
+        coords: [51.5559, -0.1762],
+        facts: [
+          "Passionate about fashion and design.",
+          "Loves nature walks and photography.",
+          "Always brings amazing positive vibes."
+        ]
+      },
+      p17: {
+        name: "Sofia Hakimian",
+        relation: "Bia",
+        image: basePath + "SO.jpeg",
+        flag: "🇬🇧",
+        location: "Mill Hill, UK",
+        coords: [51.6136, -0.2372],
+        facts: [
+          "The fun, adventurous youngest sibling!",
+          "Loves art, music, and social events.",
+          "Favorite cousin and auntie companion."
         ]
       },
       p5: {
@@ -543,7 +713,7 @@
       const person = familyData[id];
       if (!person) return;
 
-      document.getElementById('m-avatar').innerHTML = `<img src="${person.image}" alt="${person.name}">`;
+      document.getElementById('m-avatar').innerHTML = `<img src="${person.image}" alt="${person.name}" onerror="this.outerHTML='👤'">`;
       document.getElementById('m-name').innerText = person.name;
       document.getElementById('m-relation').innerText = person.relation;
       document.getElementById('m-flag').innerText = person.flag;
