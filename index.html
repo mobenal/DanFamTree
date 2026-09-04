@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Our Family Tree & Heritage</title>
   
+  <!-- Leaflet CSS for Interactive Map -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
   <style>
@@ -27,6 +28,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      min-width: fit-content;
     }
 
     h1 {
@@ -40,19 +42,17 @@
       color: #666;
     }
 
-    /* CSS TREE LAYOUT */
-    .tree {
+    .tree-wrapper {
       display: flex;
       justify-content: center;
       width: 100%;
-      overflow-x: auto;
       padding: 20px 0;
     }
 
+    /* Tree Styling */
     .tree ul {
       padding-top: 20px;
       position: relative;
-      transition: all 0.5s;
       display: flex;
       justify-content: center;
       margin: 0;
@@ -60,15 +60,16 @@
     }
 
     .tree li {
-      float: left;
       text-align: center;
       list-style-type: none;
       position: relative;
       padding: 20px 10px 0 10px;
-      transition: all 0.5s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    /* Horizontal lines connecting siblings */
+    /* Horizontal branch lines */
     .tree li::before, .tree li::after {
       content: '';
       position: absolute;
@@ -106,7 +107,7 @@
       border-radius: 5px 0 0 0;
     }
 
-    /* Vertical line down from parents */
+    /* Vertical connector lines down from parents */
     .tree ul ul::before {
       content: '';
       position: absolute;
@@ -117,24 +118,35 @@
       height: 20px;
     }
 
-    .couple {
+    /* Couple Container with Heart */
+    .couple-container {
       display: flex;
-      gap: 15px;
-      justify-content: center;
+      align-items: center;
+      gap: 16px;
       position: relative;
     }
 
-    .couple::after {
+    .couple-container::after {
       content: '❤️';
       position: absolute;
-      top: 40%;
       left: 50%;
+      top: 50%;
       transform: translate(-50%, -50%);
-      font-size: 0.85rem;
-      z-index: 3;
-      background: #fff;
+      font-size: 0.9rem;
+      z-index: 5;
+      background: #ffffff;
       border-radius: 50%;
-      padding: 1px;
+      padding: 2px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    /* Sibling unit for couples within tree branches */
+    .couple-children {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
     }
 
     .person-card {
@@ -156,11 +168,11 @@
       box-shadow: 0 8px 15px rgba(0,0,0,0.15);
     }
 
-    /* Focus highlight for core family */
+    /* Central Family Highlight */
     .person-card.hero {
       border: 3px solid var(--hero-border);
       background: #f1f8e9;
-      width: 112px;
+      width: 110px;
     }
 
     .person-avatar {
@@ -195,18 +207,18 @@
       color: #666;
     }
 
-    /* DETAIL MODAL OVERLAY */
+    /* POP-UP MODAL OVERLAY */
     .modal-overlay {
       display: none;
       position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.6);
       justify-content: center;
       align-items: center;
-      z-index: 1000;
+      z-index: 99999;
     }
 
     .modal-content {
@@ -218,6 +230,7 @@
       max-height: 85vh;
       overflow-y: auto;
       position: relative;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
       animation: popIn 0.2s ease-out;
     }
 
@@ -295,190 +308,193 @@
   <h1>Our Family Tree</h1>
   <p class="subtitle">Click on any family member to discover their story!</p>
 
-  <div class="tree">
-    <ul>
-      <li>
-        <div style="display: flex; gap: 60px; justify-content: center;">
-          
-          <div class="tree" style="padding:0;">
-            <ul>
-              <li>
-                <div class="couple">
-                  <div class="person-card" onclick="showDetails('p1')">
-                    <div class="person-avatar"><img src="./SMD.jpeg" alt="Steven Daniels" onerror="this.outerHTML='👴'"></div>
-                    <div class="person-name">Steven Daniels</div>
-                    <div class="person-relation">Grandpa</div>
-                  </div>
-                  <div class="person-card" onclick="showDetails('p2')">
-                    <div class="person-avatar"><img src="./SD.jpeg" alt="Sonya Daniels" onerror="this.outerHTML='👵'"></div>
-                    <div class="person-name">Sonya Daniels</div>
-                    <div class="person-relation">Savta</div>
-                  </div>
-                </div>
-                <ul>
-                  <li>
-                    <div class="person-card hero" onclick="showDetails('p3')">
-                      <div class="person-avatar"><img src="./RAD.jpeg" alt="Richard Daniels" onerror="this.outerHTML='👨‍⚕️'"></div>
-                      <div class="person-name">Richard Daniels</div>
-                      <div class="person-relation">Daddy</div>
-                    </div>
-                  </li>
-                  <li>
-                    <div class="tree" style="padding:0;">
-                      <ul>
-                        <li>
-                          <div class="couple">
-                            <div class="person-card" onclick="showDetails('p10')">
-                              <div class="person-avatar"><img src="./JD.jpeg" alt="Joshua Daniels" onerror="this.outerHTML='👨'"></div>
-                              <div class="person-name">Joshua Daniels</div>
-                              <div class="person-relation">Uncle Josh</div>
-                            </div>
-                            <div class="person-card" onclick="showDetails('p11')">
-                              <div class="person-avatar"><img src="./HD.jpeg" alt="Hannah Daniels" onerror="this.outerHTML='👩'"></div>
-                              <div class="person-name">Hannah Daniels</div>
-                              <div class="person-relation">Auntie Hannah</div>
-                            </div>
-                          </div>
-                          <ul>
-                            <li>
-                              <div class="person-card" onclick="showDetails('p18')">
-                                <div class="person-avatar"><img src="./KD.jpeg" alt="Kobi Daniels" onerror="this.outerHTML='👶'"></div>
-                                <div class="person-name">Kobi Daniels</div>
-                                <div class="person-relation">1st Cousin</div>
-                              </div>
-                            </li>
-                          </ul>
-                        </li>
-                      </ul>
-                    </div>
-                  </li>
-                  <li>
-                    <div class="person-card" onclick="showDetails('p12')">
-                      <div class="person-avatar"><img src="./ZD.jpeg" alt="Zoe Daniels" onerror="this.outerHTML='👩'"></div>
-                      <div class="person-name">Zoe Daniels</div>
-                      <div class="person-relation">Auntie Zoe</div>
-                    </div>
-                  </li>
-                </ul>
-              </li>
-            </ul>
+  <div class="tree-wrapper">
+    <div class="tree">
+      <ul>
+        <!-- TOP LEVEL: GRANDPARENTS (DANIELS & HAKIMIAN) -->
+        <li>
+          <div style="display: flex; gap: 80px; justify-content: center;">
+            
+            <!-- Steven & Sonya -->
+            <div class="couple-container">
+              <div class="person-card" onclick="showDetails('p1')">
+                <div class="person-avatar"><img src="./SMD.jpeg" alt="Steven Daniels" onerror="this.outerHTML='👴'"></div>
+                <div class="person-name">Steven Daniels</div>
+                <div class="person-relation">Grandpa</div>
+              </div>
+              <div class="person-card" onclick="showDetails('p2')">
+                <div class="person-avatar"><img src="./SD.jpeg" alt="Sonya Daniels" onerror="this.outerHTML='👵'"></div>
+                <div class="person-name">Sonya Daniels</div>
+                <div class="person-relation">Savta</div>
+              </div>
+            </div>
+
+            <!-- Michael & Dalia -->
+            <div class="couple-container">
+              <div class="person-card" onclick="showDetails('p8')">
+                <div class="person-avatar"><img src="./MH.jpeg" alt="Michael Hakimian" onerror="this.outerHTML='👴'"></div>
+                <div class="person-name">Michael Hakimian</div>
+                <div class="person-relation">Baba</div>
+              </div>
+              <div class="person-card" onclick="showDetails('p9')">
+                <div class="person-avatar"><img src="./DH.jpeg" alt="Dalia Hakimian" onerror="this.outerHTML='👵'"></div>
+                <div class="person-name">Dalia Hakimian</div>
+                <div class="person-relation">Nonna</div>
+              </div>
+            </div>
+
           </div>
 
-          <div class="tree" style="padding:0;">
-            <ul>
-              <li>
-                <div class="couple">
-                  <div class="person-card" onclick="showDetails('p8')">
-                    <div class="person-avatar"><img src="./MH.jpeg" alt="Michael Hakimian" onerror="this.outerHTML='👴'"></div>
-                    <div class="person-name">Michael Hakimian</div>
-                    <div class="person-relation">Baba</div>
+          <!-- GENERATION ROW: ALL SIBLINGS IN ONE HORIZONTAL TREE -->
+          <ul>
+
+            <!-- Josh & Hannah -->
+            <li>
+              <div class="couple-children">
+                <div class="couple-container">
+                  <div class="person-card" onclick="showDetails('p10')">
+                    <div class="person-avatar"><img src="./JD.jpeg" alt="Joshua Daniels" onerror="this.outerHTML='👨'"></div>
+                    <div class="person-name">Joshua Daniels</div>
+                    <div class="person-relation">Uncle Josh</div>
                   </div>
-                  <div class="person-card" onclick="showDetails('p9')">
-                    <div class="person-avatar"><img src="./DH.jpeg" alt="Dalia Hakimian" onerror="this.outerHTML='👵'"></div>
-                    <div class="person-name">Dalia Hakimian</div>
-                    <div class="person-relation">Nonna</div>
+                  <div class="person-card" onclick="showDetails('p11')">
+                    <div class="person-avatar"><img src="./HD.jpeg" alt="Hannah Daniels" onerror="this.outerHTML='👩'"></div>
+                    <div class="person-name">Hannah Daniels</div>
+                    <div class="person-relation">Auntie Hannah</div>
                   </div>
                 </div>
-                <ul>
-                  <li>
-                    <div class="person-card hero" onclick="showDetails('p4')">
-                      <div class="person-avatar"><img src="./ISD.jpeg" alt="Isabella Daniels" onerror="this.outerHTML='👩'"></div>
-                      <div class="person-name">Isabella Daniels</div>
-                      <div class="person-relation">Mummy</div>
-                    </div>
-                  </li>
-                  <li>
-                    <div class="tree" style="padding:0;">
-                      <ul>
-                        <li>
-                          <div class="couple">
-                            <div class="person-card" onclick="showDetails('p13')">
-                              <div class="person-avatar"><img src="./DH2.jpeg" alt="Danny Hakimian" onerror="this.outerHTML='👨'"></div>
-                              <div class="person-name">Danny Hakimian</div>
-                              <div class="person-relation">Doi Danny</div>
-                            </div>
-                            <div class="person-card" onclick="showDetails('p14')">
-                              <div class="person-avatar"><img src="./EH.jpeg" alt="Evette Hakimian" onerror="this.outerHTML='👩'"></div>
-                              <div class="person-name">Evette Hakimian</div>
-                              <div class="person-relation">Auntie Evette</div>
-                            </div>
-                          </div>
-                          <ul>
-                            <li>
-                              <div class="person-card" onclick="showDetails('p19')">
-                                <div class="person-avatar"><img src="./MH2.jpeg" alt="Michael Hakimian" onerror="this.outerHTML='👶'"></div>
-                                <div class="person-name">Michael Hakimian</div>
-                                <div class="person-relation">1st Cousin</div>
-                              </div>
-                            </li>
-                          </ul>
-                        </li>
-                      </ul>
-                    </div>
-                  </li>
-                  <li>
-                    <div class="couple">
-                      <div class="person-card" onclick="showDetails('p15')">
-                        <div class="person-avatar"><img src="./SH.jpeg" alt="Sammy Hakimian" onerror="this.outerHTML='👨'"></div>
-                        <div class="person-name">Sammy Hakimian</div>
-                        <div class="person-relation">Uncle Sam</div>
+                <div class="tree" style="width:100%;">
+                  <ul>
+                    <li>
+                      <div class="person-card" onclick="showDetails('p18')">
+                        <div class="person-avatar"><img src="./KD.jpeg" alt="Kobi Daniels" onerror="this.outerHTML='👶'"></div>
+                        <div class="person-name">Kobi Daniels</div>
+                        <div class="person-relation">1st Cousin</div>
                       </div>
-                      <div class="person-card" onclick="showDetails('p16')">
-                        <div class="person-avatar"><img src="./BH.jpeg" alt="Britney Hakimian" onerror="this.outerHTML='👩'"></div>
-                        <div class="person-name">Britney Hakimian</div>
-                        <div class="person-relation">Auntie Brit</div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </li>
+
+            <!-- Zoe -->
+            <li>
+              <div class="person-card" onclick="showDetails('p12')">
+                <div class="person-avatar"><img src="./ZD.jpeg" alt="Zoe Daniels" onerror="this.outerHTML='👩'"></div>
+                <div class="person-name">Zoe Daniels</div>
+                <div class="person-relation">Auntie Zoe</div>
+              </div>
+            </li>
+
+            <!-- RICHARD & ISABELLA -->
+            <li>
+              <div class="couple-children">
+                <div class="couple-container">
+                  <div class="person-card hero" onclick="showDetails('p3')">
+                    <div class="person-avatar"><img src="./RAD.jpeg" alt="Richard Daniels" onerror="this.outerHTML='👨‍⚕️'"></div>
+                    <div class="person-name">Richard Daniels</div>
+                    <div class="person-relation">Daddy</div>
+                  </div>
+                  <div class="person-card hero" onclick="showDetails('p4')">
+                    <div class="person-avatar"><img src="./ISD.jpeg" alt="Isabella Daniels" onerror="this.outerHTML='👩'"></div>
+                    <div class="person-name">Isabella Daniels</div>
+                    <div class="person-relation">Mummy</div>
+                  </div>
+                </div>
+
+                <!-- Jesse, Jonah, Judah Directly Below -->
+                <div class="tree" style="width:100%;">
+                  <ul>
+                    <li>
+                      <div class="person-card hero" onclick="showDetails('p5')">
+                        <div class="person-avatar"><img src="./JSD.jpeg" alt="Jesse Daniels" onerror="this.outerHTML='👦'"></div>
+                        <div class="person-name">Jesse Daniels</div>
+                        <div class="person-relation">First Son</div>
                       </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div class="person-card" onclick="showDetails('p17')">
-                      <div class="person-avatar"><img src="./SO.jpeg" alt="Sofia Hakimian" onerror="this.outerHTML='👩'"></div>
-                      <div class="person-name">Sofia Hakimian</div>
-                      <div class="person-relation">Bia</div>
-                    </div>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-
-        </div>
-
-        <ul style="padding-top: 20px;">
-          <li>
-            <ul>
-              <li>
-                <div class="person-card hero" onclick="showDetails('p5')">
-                  <div class="person-avatar"><img src="./JSD.jpeg" alt="Jesse Daniels" onerror="this.outerHTML='👦'"></div>
-                  <div class="person-name">Jesse Daniels</div>
-                  <div class="person-relation">First Son</div>
+                    </li>
+                    <li>
+                      <div class="person-card hero" onclick="showDetails('p6')">
+                        <div class="person-avatar"><img src="./JID.jpeg" alt="Jonah Daniels" onerror="this.outerHTML='👦'"></div>
+                        <div class="person-name">Jonah Daniels</div>
+                        <div class="person-relation">Second Son</div>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="person-card hero" onclick="showDetails('p7')">
+                        <div class="person-avatar"><img src="./JJd.jpeg" alt="Judah Daniels" onerror="this.outerHTML='👶'"></div>
+                        <div class="person-name">Judah Daniels</div>
+                        <div class="person-relation">Third Son</div>
+                      </div>
+                    </li>
+                  </ul>
                 </div>
-              </li>
-              <li>
-                <div class="person-card hero" onclick="showDetails('p6')">
-                  <div class="person-avatar"><img src="./JID.jpeg" alt="Jonah Daniels" onerror="this.outerHTML='👦'"></div>
-                  <div class="person-name">Jonah Daniels</div>
-                  <div class="person-relation">Second Son</div>
-                </div>
-              </li>
-              <li>
-                <div class="person-card hero" onclick="showDetails('p7')">
-                  <div class="person-avatar"><img src="./JJd.jpeg" alt="Judah Daniels" onerror="this.outerHTML='👶'"></div>
-                  <div class="person-name">Judah Daniels</div>
-                  <div class="person-relation">Third Son</div>
-                </div>
-              </li>
-            </ul>
-          </li>
-        </ul>
+              </div>
+            </li>
 
-      </li>
-    </ul>
+            <!-- Danny & Evette -->
+            <li>
+              <div class="couple-children">
+                <div class="couple-container">
+                  <div class="person-card" onclick="showDetails('p13')">
+                    <div class="person-avatar"><img src="./DH2.jpeg" alt="Danny Hakimian" onerror="this.outerHTML='👨'"></div>
+                    <div class="person-name">Danny Hakimian</div>
+                    <div class="person-relation">Doi Danny</div>
+                  </div>
+                  <div class="person-card" onclick="showDetails('p14')">
+                    <div class="person-avatar"><img src="./EH.jpeg" alt="Evette Hakimian" onerror="this.outerHTML='👩'"></div>
+                    <div class="person-name">Evette Hakimian</div>
+                    <div class="person-relation">Auntie Evette</div>
+                  </div>
+                </div>
+                <div class="tree" style="width:100%;">
+                  <ul>
+                    <li>
+                      <div class="person-card" onclick="showDetails('p19')">
+                        <div class="person-avatar"><img src="./MH2.jpeg" alt="Michael Hakimian" onerror="this.outerHTML='👶'"></div>
+                        <div class="person-name">Michael Hakimian</div>
+                        <div class="person-relation">1st Cousin</div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </li>
+
+            <!-- Sammy & Britney -->
+            <li>
+              <div class="couple-container">
+                <div class="person-card" onclick="showDetails('p15')">
+                  <div class="person-avatar"><img src="./SH.jpeg" alt="Sammy Hakimian" onerror="this.outerHTML='👨'"></div>
+                  <div class="person-name">Sammy Hakimian</div>
+                  <div class="person-relation">Uncle Sam</div>
+                </div>
+                <div class="person-card" onclick="showDetails('p16')">
+                  <div class="person-avatar"><img src="./BH.jpeg" alt="Britney Hakimian" onerror="this.outerHTML='👩'"></div>
+                  <div class="person-name">Britney Hakimian</div>
+                  <div class="person-relation">Auntie Brit</div>
+                </div>
+              </div>
+            </li>
+
+            <!-- Sofia -->
+            <li>
+              <div class="person-card" onclick="showDetails('p17')">
+                <div class="person-avatar"><img src="./SO.jpeg" alt="Sofia Hakimian" onerror="this.outerHTML='👩'"></div>
+                <div class="person-name">Sofia Hakimian</div>
+                <div class="person-relation">Bia</div>
+              </div>
+            </li>
+
+          </ul>
+        </li>
+      </ul>
+    </div>
   </div>
 
+  <!-- POPUP MODAL OVERLAY -->
   <div class="modal-overlay" id="modal" onclick="closeModal(event)">
     <div class="modal-content" onclick="event.stopPropagation()">
-      <span class="close-btn" onclick="closeModal()">&times;</span>
+      <span class="close-btn" onclick="closeModal(event)">&times;</span>
       <div class="modal-header">
         <div class="modal-avatar" id="m-avatar"></div>
         <div>
@@ -498,6 +514,7 @@
     </div>
   </div>
 
+  <!-- Leaflet JavaScript -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <script>
@@ -517,8 +534,8 @@
         coords: [51.6183, -0.3168],
         facts: [
           "Loves working with numbers and finance.",
-          "The Arsenal OG",
-          "Tells great pirate stories to the grandkids."
+          "Enjoys hitting the golf course on weekends.",
+          "Tells great stories to the grandkids."
         ]
       },
       p2: {
@@ -578,8 +595,8 @@
         relation: "Uncle Josh",
         image: basePath + "JD.jpeg",
         flag: "🇬🇧",
-        location: "Borehamwood, UK",
-        coords: [51.6578, -0.2731],
+        location: "Pinner, UK",
+        coords: [51.5936, -0.3807],
         facts: [
           "Ticketmaster was named after him",
           "Perpetually injured",
@@ -591,12 +608,12 @@
         relation: "Auntie Hannah",
         image: basePath + "HD.jpeg",
         flag: "🇬🇧",
-        location: "Borehamwood, UK",
-        coords: [51.6578, -0.2731],
+        location: "Leeds, UK",
+        coords: [53.8008, -1.5491],
         facts: [
-          "Loves baking delicious birthday treats.",
           "Had a pet polar bear growing up",
-          "Always bringing great energy to gatherings."
+          "Catchphrase is Oyehclog",
+          "Always bringing great energy to gatherings"
         ]
       },
       p18: {
@@ -604,8 +621,8 @@
         relation: "1st Cousin",
         image: basePath + "KD.jpeg",
         flag: "🇬🇧",
-        location: "Borehamwood, UK",
-        coords: [51.6578, -0.2731],
+        location: "Pinner, UK",
+        coords: [51.5936, -0.3807],
         facts: [
           "Son of Uncle Josh and Auntie Hannah.",
           "Loves playing with his cousins.",
@@ -616,13 +633,13 @@
         name: "Zoe Daniels",
         relation: "Auntie Zoe",
         image: basePath + "ZD.jpeg",
-        flag: "🇬🇧",
-        location: "West Hampstead, UK",
-        coords: [51.5469, -0.1912],
+        flag: "🇬🇧🇮🇱",
+        location: "Pinner, UK",
+        coords: [51.5936, -0.3807],
         facts: [
-          "Loves helping people as an occupational therapist.",
-          "Passionate aboutthe Yidden.",
-          "Also scraed of bread"
+          "Loves helping people as an occupational therapist",
+          "Passionate about the Yidden",
+          "Also afraid of bread"
         ]
       },
       p4: {
@@ -642,39 +659,39 @@
         name: "Danny Hakimian",
         relation: "Doi Danny",
         image: basePath + "DH2.jpeg",
-        flag: "🇬🇧",
-        location: "Golders Green, UK",
-        coords: [51.5724, -0.1997],
+        flag: "🇺🇸🇬🇧",
+        location: "Finchley, UK",
+        coords: [51.6008, -0.1873],
         facts: [
-          "Loves sports and competitive trivia night.",
-          "Always knows the best restaurants in town.",
-          "Great at keeping everyone laughing."
+          "Scared of Ambient AI. And Spiders",
+          "Hates recycling",
+          "Loves Chabad"
         ]
       },
       p14: {
         name: "Evette Hakimian",
         relation: "Auntie Evette",
         image: basePath + "EH.jpeg",
-        flag: "🇬🇧",
-        location: "Golders Green, UK",
-        coords: [51.5724, -0.1997],
+        flag: "🇺🇸",
+        location: "Cleveland, Ohio, USA",
+        coords: [41.4993, -81.6944],
         facts: [
-          "Loves travel and exploring new cities.",
-          "Expert at organized event planning.",
-          "Super warm and hospitable host."
+          "Brings the party energy",
+          "Only buys shoes in Temple Fortune",
+          "Go Buckeyes!"
         ]
       },
       p19: {
         name: "Michael Hakimian",
         relation: "1st Cousin",
         image: basePath + "MH2.jpeg",
-        flag: "🇬🇧",
-        location: "Golders Green, UK",
-        coords: [51.5724, -0.1997],
+        flag: "🇺🇸",
+        location: "Aventura, Florida, USA",
+        coords: [25.9565, -80.1392],
         facts: [
-          "Winner of Florida's Dirtiest Laugh 2026",
-          "Named after his grandpa Baba Michael!",
-          "Full of energy and loves playdates."
+          "Does not like singing at Nursery",
+          "Named after his grandpa Baba Michael",
+          "Winner of Florida's Dirtiest Laugh 2026"
         ]
       },
       p15: {
@@ -682,25 +699,25 @@
         relation: "Uncle Sam",
         image: basePath + "SH.jpeg",
         flag: "🇬🇧",
-        location: "Hampstead, UK",
-        coords: [51.5559, -0.1762],
+        location: "Finchley, UK",
+        coords: [51.6008, -0.1873],
         facts: [
-          "Huge tech and gadget enthusiast.",
-          "Loves morning coffee and weekend runs.",
-          "Always down for board games."
+          "Will fuse any foods together.",
+          "Likes tea; hates coffee",
+          "Thinks he's better at sheshbesh than he is"
         ]
       },
       p16: {
         name: "Britney Hakimian",
         relation: "Auntie Brit",
         image: basePath + "BH.jpeg",
-        flag: "🇬🇧",
-        location: "Hampstead, UK",
-        coords: [51.5559, -0.1762],
+        flag: "🇺🇸",
+        location: "Westchester, NY, USA",
+        coords: [41.1220, -73.7949],
         facts: [
-          "Passionate about fashion and design.",
-          "Loves nature walks and photography.",
-          "Always brings amazing positive vibes."
+          "Apparently doesn't really like Ladbroke Grove",
+          "Does like Italy though",
+          "Has not shared her lemon chicken recipe"
         ]
       },
       p17: {
@@ -708,12 +725,12 @@
         relation: "Bia",
         image: basePath + "SO.jpeg",
         flag: "🇬🇧",
-        location: "Mill Hill, UK",
-        coords: [51.6136, -0.2372],
+        location: "Finchley, UK",
+        coords: [51.6008, -0.1873],
         facts: [
-          "The fun, adventurous youngest sibling!",
-          "Loves art, music, and social events.",
-          "Favorite cousin and auntie companion."
+          "Excellent airplane babysitter",
+          "Brings solutions, not problems",
+          "The Generational Link"
         ]
       },
       p5: {
@@ -729,3 +746,99 @@
           "Always ready for an adventure."
         ]
       },
+      p6: {
+        name: "Jonah Daniels",
+        relation: "Second Son",
+        image: basePath + "JID.jpeg",
+        flag: "🇬🇧",
+        location: "Finchley, UK",
+        coords: [51.6008, -0.1873],
+        facts: [
+          "Full of energy and loves playing outdoors.",
+          "Enjoys creative drawing and fun games.",
+          "Great teammate to his brothers."
+        ]
+      },
+      p7: {
+        name: "Judah Daniels",
+        relation: "Third Son",
+        image: basePath + "JJd.jpeg",
+        flag: "🇬🇧",
+        location: "Finchley, UK",
+        coords: [51.6008, -0.1873],
+        facts: [
+          "The youngest brother of the group!",
+          "Loves music, toys, and big smiles.",
+          "Always bringing joy to the house."
+        ]
+      }
+    };
+
+    function initMap() {
+      if (!map) {
+        map = L.map('map-container').setView(activeCoords, 11);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap'
+        }).addTo(map);
+      }
+    }
+
+    function showDetails(id) {
+      const person = familyData[id];
+      if (!person) return;
+
+      document.getElementById('m-avatar').innerHTML = `<img src="${person.image}" alt="${person.name}" onerror="this.outerHTML='👤'">`;
+      document.getElementById('m-name').innerText = person.name;
+      document.getElementById('m-relation').innerText = person.relation;
+      document.getElementById('m-flag').innerText = person.flag;
+      document.getElementById('m-location').innerText = person.location;
+
+      activeCoords = person.coords;
+
+      const factsList = document.getElementById('m-facts');
+      factsList.innerHTML = '';
+      person.facts.forEach(fact => {
+        const li = document.createElement('li');
+        li.innerText = fact;
+        factsList.appendChild(li);
+      });
+
+      const modal = document.getElementById('modal');
+      modal.style.display = 'flex';
+
+      setTimeout(() => {
+        initMap();
+        map.invalidateSize();
+        
+        const isUS = person.location.includes("USA");
+        const isIran = person.location.includes("Iran");
+        const zoomLevel = (isUS || isIran) ? 7 : 12;
+
+        map.setView(activeCoords, zoomLevel);
+
+        if (currentMarker) {
+          map.removeLayer(currentMarker);
+        }
+        currentMarker = L.marker(activeCoords).addTo(map)
+          .bindPopup(`<b>${person.name}</b><br>${person.location}`)
+          .openPopup();
+      }, 100);
+    }
+
+    function recenterMap() {
+      if (map && activeCoords) {
+        const isUS = activeCoords[1] < -50;
+        const isIran = activeCoords[0] === 35.6892;
+        const zoomLevel = (isUS || isIran) ? 7 : 12;
+
+        map.flyTo(activeCoords, zoomLevel, { duration: 1 });
+      }
+    }
+
+    function closeModal(event) {
+      if (event) event.stopPropagation();
+      document.getElementById('modal').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
