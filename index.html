@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Our Family Tree & Heritage</title>
+  <title>The Daniels Family Tree</title>
   
   <!-- Leaflet CSS for Interactive Maps -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -24,7 +24,7 @@
       background-color: var(--bg-color);
       color: var(--text-color);
       margin: 0;
-      padding: 20px;
+      padding: 20px 10px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -34,12 +34,14 @@
     h1 {
       color: var(--accent-color);
       margin-bottom: 5px;
+      text-align: center;
     }
 
     p.subtitle {
       margin-top: 0;
       margin-bottom: 30px;
       color: #666;
+      text-align: center;
     }
 
     .tree-wrapper {
@@ -207,57 +209,66 @@
       color: #666;
     }
 
-    /* POP-UP MODAL OVERLAY */
+    /* MOBILE OPTIMIZED POP-UP MODAL OVERLAY */
     .modal-overlay {
       display: none;
       position: fixed;
       top: 0;
       left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.6);
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.65);
       justify-content: center;
       align-items: center;
       z-index: 99999;
+      padding: 12px;
+      box-sizing: border-box;
+      backdrop-filter: blur(2px);
     }
 
     .modal-content {
       background: #fff;
-      padding: 25px;
-      border-radius: 15px;
-      max-width: 520px;
-      width: 92%;
-      max-height: 88vh;
+      padding: 20px;
+      border-radius: 16px;
+      max-width: 500px;
+      width: 100%;
+      max-height: 90vh;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
       position: relative;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-      animation: popIn 0.2s ease-out;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+      animation: popIn 0.25s ease-out;
+      box-sizing: border-box;
     }
 
     @keyframes popIn {
-      from { transform: scale(0.8); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
+      from { transform: scale(0.9) translateY(10px); opacity: 0; }
+      to { transform: scale(1) translateY(0); opacity: 1; }
     }
 
     .close-btn {
       position: absolute;
-      top: 10px;
-      right: 15px;
-      font-size: 24px;
+      top: 12px;
+      right: 16px;
+      font-size: 28px;
+      line-height: 1;
       cursor: pointer;
-      color: #888;
+      color: #777;
+      padding: 4px;
+      z-index: 10;
     }
 
     .modal-header {
       display: flex;
       align-items: center;
-      gap: 15px;
-      margin-bottom: 10px;
+      gap: 12px;
+      margin-bottom: 12px;
+      padding-right: 24px;
     }
 
     .modal-avatar {
-      width: 70px;
-      height: 70px;
+      width: 65px;
+      height: 65px;
       border-radius: 50%;
       overflow: hidden;
       flex-shrink: 0;
@@ -265,7 +276,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2rem;
+      font-size: 1.8rem;
     }
 
     .modal-title-area {
@@ -275,7 +286,7 @@
 
     .hebrew-name {
       font-family: 'SBL Hebrew', 'Taamey Frank CLM', 'Traditional Arabic', serif;
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       color: var(--accent-color);
       direction: rtl;
       font-weight: bold;
@@ -291,7 +302,7 @@
     .dates-bar {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 8px 14px;
       background: #f8f9fa;
       border-left: 4px solid var(--accent-color);
       padding: 8px 12px;
@@ -307,11 +318,11 @@
       gap: 4px;
     }
 
-    /* SIDE-BY-SIDE MAPS LAYOUT */
+    /* SIDE-BY-SIDE & RESPONSIVE MAPS LAYOUT */
     .maps-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      gap: 10px;
       margin-bottom: 15px;
     }
 
@@ -340,23 +351,52 @@
       padding: 2px 6px;
       border-radius: 12px;
       font-size: 0.72rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 90px;
     }
 
     .map-box {
       width: 100%;
-      height: 140px;
+      height: 130px;
       border-radius: 6px;
       border: 1px solid #ccc;
       overflow: hidden;
+      touch-action: pan-x pan-y;
     }
 
     ul.fun-facts {
       padding-left: 20px;
       margin-top: 5px;
+      font-size: 0.9rem;
     }
 
     ul.fun-facts li {
-      margin-bottom: 5px;
+      margin-bottom: 6px;
+    }
+
+    /* MOBILE SCREENS SPECIAL LAYOUT */
+    @media (max-width: 480px) {
+      .modal-overlay {
+        align-items: flex-end; /* Sheet style on small screens */
+        padding: 0;
+      }
+
+      .modal-content {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        max-height: 85vh;
+        padding: 16px;
+      }
+
+      .maps-grid {
+        grid-template-columns: 1fr; /* Stack maps on narrow mobile screens */
+      }
+
+      .map-box {
+        height: 120px;
+      }
     }
   </style>
 </head>
@@ -508,7 +548,7 @@
                     <li>
                       <div class="person-card" onclick="showDetails('p19')">
                         <div class="person-avatar"><img src="./MH2.jpeg" alt="Michael Hakimian" onerror="this.outerHTML='👶'"></div>
-                        <div class="person-name">Michael (Mickey) Hakimian</div>
+                        <div class="person-name">Michael Hakimian</div>
                         <div class="person-relation">1st Cousin</div>
                       </div>
                     </li>
@@ -568,7 +608,7 @@
       <div class="maps-grid">
         <div class="map-card">
           <div class="map-card-header">
-            <span>👶 Origin</span>
+            <span>👶 Born</span>
             <span class="tag" id="m-origin-loc">Location</span>
           </div>
           <div id="map-origin" class="map-box"></div>
@@ -816,7 +856,7 @@
         ]
       },
       p19: {
-        name: "Michael (Mickey) Hakimian",
+        name: "Michael Hakimian",
         hebrewName: "משה בן משיח ויוכבד",
         relation: "1st Cousin",
         dob: "30 October 2021",
@@ -1043,6 +1083,7 @@
 
       const modal = document.getElementById('modal');
       modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden'; // Lock background scrolling on mobile
 
       setTimeout(() => {
         initMaps();
@@ -1064,12 +1105,13 @@
         
         livesMarker = L.marker(person.livesCoords).addTo(livesMap)
           .bindPopup(`<b>Lives:</b> ${person.livesLocation}`);
-      }, 100);
+      }, 150);
     }
 
     function closeModal(event) {
       if (event) event.stopPropagation();
       document.getElementById('modal').style.display = 'none';
+      document.body.style.overflow = ''; // Restore background scrolling
     }
   </script>
 </body>
