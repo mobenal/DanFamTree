@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Our Family Tree & Heritage</title>
+  
+  <!-- Leaflet CSS for Interactive Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <style>
+    :root {
+      --bg-color: #f4f7f6;
+      --card-bg: #ffffff;
+      --accent-color: #2e7d32;
+      --text-color: #333333;
+      --border-color: #a5d6a7;
+      --line-color: #81c784;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      color: var(--accent-color);
+      margin-bottom: 5px;
+    }
+
+    p.subtitle {
+      margin-top: 0;
+      margin-bottom: 30px;
+      color: #666;
+    }
+
+    /* CSS TREE LINES & BRANCHES */
+    .tree {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      overflow-x: auto;
+      padding: 20px 0;
+    }
+
+    .tree ul {
+      padding-top: 20px;
+      position: relative;
+      transition: all 0.5s;
+      display: flex;
+      justify-content: center;
+      margin: 0;
+      padding-left: 0;
+    }
+
+    .tree li {
+      float: left;
+      text-align: center;
+      list-style-type: none;
+      position: relative;
+      padding: 20px 15px 0 15px;
+      transition: all 0.5s;
+    }
+
+    .tree li::before, .tree li::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 50%;
+      border-top: 3px solid var(--line-color);
+      width: 50%;
+      height: 20px;
+    }
+
+    .tree li::after {
+      right: auto;
+      left: 50%;
+      border-left: 3px solid var(--line-color);
+    }
+
+    .tree li:only-child::after, .tree li:only-child::before {
+      display: none;
+    }
+
+    .tree li:only-child {
+      padding-top: 0;
+    }
+
+    .tree li:first-child::before, .tree li:last-child::after {
+      border: none;
+    }
+
+    .tree li:last-child::before {
+      border-right: 3px solid var(--line-color);
+      border-radius: 0 5px 0 0;
+    }
+
+    .tree li:first-child::after {
+      border-radius: 5px 0 0 0;
+    }
+
+    .tree ul ul::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      border-left: 3px solid var(--line-color);
+      width: 0;
+      height: 20px;
+    }
+
+    .couple {
+      display: flex;
+      gap: 40px;
+      justify-content: center;
+      position: relative;
+    }
+
+    .couple .person-card:first-child::after {
+      content: '';
+      position: absolute;
+      top: 45px;
+      right: -40px;
+      width: 40px;
+      height: 3px;
+      background-color: var(--line-color);
+      z-index: 1;
+    }
+
+    .person-card {
+      background: var(--card-bg);
+      border: 3px solid var(--border-color);
+      border-radius: 12px;
+      padding: 12px;
+      width: 120px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      position: relative;
+      z-index: 2;
+    }
+
+    .person-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+    }
+
+    .person-avatar {
+      width: 65px;
+      height: 65px;
+      border-radius: 50%;
+      margin: 0 auto 8px;
+      overflow: hidden;
+    }
+
+    .person-avatar img,
+    .modal-avatar img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .person-name {
+      font-weight: bold;
+      font-size: 0.9rem;
+      margin-bottom: 2px;
+    }
+
+    .person-relation {
+      font-size: 0.8rem;
+      color: #666;
+    }
+
+    /* DETAIL MODAL OVERLAY */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: #fff;
+      padding: 25px;
+      border-radius: 15px;
+      max-width: 420px;
+      width: 90%;
+      max-height: 85vh;
+      overflow-y: auto;
+      position: relative;
+      animation: popIn 0.2s ease-out;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 24px;
+      cursor: pointer;
+      color: #888;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .modal-avatar {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    /* INTERACTIVE HERITAGE TAG */
+    .heritage-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #e8f5e9;
+      color: var(--accent-color);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+      cursor: pointer;
+      border: 1px solid var(--border-color);
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .heritage-tag:hover {
+      background: #c8e6c9;
+      transform: scale(1.02);
+    }
+
+    /* MAP CONTAINER IN MODAL */
+    #map-container {
+      width: 100%;
+      height: 180px;
+      border-radius: 10px;
+      margin-top: 10px;
+      margin-bottom: 15px;
+      border: 2px solid var(--border-color);
+      overflow: hidden;
+    }
+
+    ul.fun-facts {
+      padding-left: 20px;
+      margin-top: 5px;
+    }
+
+    ul.fun-facts li {
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Our Family Tree</h1>
+  <p class="subtitle">Click on any family member to discover their story!</p>
+
+  <!-- Interactive Visual Tree -->
+  <div class="tree">
+    <ul>
+      <li>
+        <div style="display: flex; gap: 60px; justify-content: center;">
+          
+          <!-- Steven & Sonya Branch -> Richard -->
+          <div class="tree" style="padding:0;">
+            <ul>
+              <li>
+                <div class="couple">
+                  <div class="person-card" onclick="showDetails('p1')">
+                    <div class="person-avatar"><img src="/Users/richarddaniels/Desktop/FTP/SMD.jpeg" alt="Steven Daniels"></div>
+                    <div class="person-name">Steven Daniels</div>
+                    <div class="person-relation">Grandpa</div>
+                  </div>
+                  <div class="person-card" onclick="showDetails('p2')">
+                    <div class="person-avatar"><img src="/Users/richarddaniels/Desktop/FTP/SD.jpeg" alt="Sonya Daniels"></div>
+                    <div class="person-name">Sonya Daniels</div>
+                    <div class="person-relation">Savta</div>
+                  </div>
+                </div>
+                <ul>
+                  <li>
+                    <div class="person-card" onclick="showDetails('p3')">
+                      <div class="person-avatar"><img src="/Users/richarddaniels/Desktop/FTP/RAD.jpeg" alt="Richard Daniels"></div>
+                      <div class="person-name">Richard Daniels</div>
+                      <div class="person-relation">Daddy</div>
+                    </div>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Michael & Dalia Branch -> Isabella -->
+          <div class="tree" style="padding:0;">
+            <ul>
+              <li>
+                <div class="couple">
+                  <div class="person-card" onclick="showDetails('p8')">
+                    <div class="person-avatar"><img src="/Users/richarddaniels/Desktop/FTP/MH.jpeg" alt="Michael Hakimian"></div>
+                    <div class="person-name">Michael Hakimian</div>
+                    <div class="person-relation">Baba</div>
+                  </div>
+                  <div class="person-card" onclick="showDetails('p9')">
+                    <div class="person-avatar"><img src="/Users/richarddaniels/Desktop/FTP/DH.jpeg" alt="Dalia Hakimian"></div>
+                    <div class="person-name">Dalia Hakimian</div>
+                    <div class="person-relation">Nonna</div>
+                  </div>
+                </div>
+                <ul>
+                  <li>
+                    <div class="person-card" onclick="showDetails('p4')">
+                      <div class="person-avatar"><img src="/Users/richarddaniels/Desktop/FTP/ISD.jpeg" alt="Isabella Daniels"></div>
+                      <div class="person-name">Isabella Daniels</div>
+                      <div class="person-relation">Mummy</div>
+                    </div>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+
+        <!-- Merged Connector from Richard & Isabella -> Children -->
+        <ul style="padding-top: 0;">
+          <li style="padding-top: 0;">
+            <div style="position: relative; width: 330px; height: 20px; margin: 0 auto;">
+              <div style="position: absolute; top: 0; left: 0; width: 100%; border-top: 3px solid var(--line-color);"></div>
+            </div>
+            <ul>
+              <li>
+                <div class="person-card" onclick="showDetails('p5')">
+                  <div class="person-avatar"><img src="/Users/richarddaniels/Desktop/FTP/JSD.jpeg" alt="Jesse Daniels"></div>
+                  <div class="person-name">Jesse Daniels</div>
+                  <div class="person-relation">First son</div>
+                </div>
+              </li>
+              <li>
+                <div class="person-card" onclick="showDetails('p6')">
+                  <div class="person-avatar"><img src="/Users/richarddaniels/Desktop/FTP/JID.jpeg" alt="Jonah Daniels"></div>
+                  <div class="person-name">Jonah Daniels</div>
+                  <div class="person-relation">Second son</div>
+                </div>
+              </li>
+              <li>
+                <div class="person-card" onclick="showDetails('p7')">
+                  <div class="person-avatar"><img src="/Users/richarddaniels/Desktop/FTP/JJd.jpeg" alt="Judah Daniels"></div>
+                  <div class="person-name">Judah Daniels</div>
+                  <div class="person-relation">Third son</div>
+                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+
+      </li>
+    </ul>
+  </div>
+
+  <!-- Modal for Member Details -->
+  <div class="modal-overlay" id="modal" onclick="closeModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <span class="close-btn" onclick="closeModal()">&times;</span>
+      <div class="modal-header">
+        <div class="modal-avatar" id="m-avatar"></div>
+        <div>
+          <h2 id="m-name" style="margin:0;">Name</h2>
+          <div id="m-relation" style="color:#666; font-size:0.9rem;">Relation</div>
+        </div>
+      </div>
+
+      <!-- Tag triggers map centering on click -->
+      <div class="heritage-tag" id="m-heritage" onclick="recenterMap()">
+        <span id="m-flag">🇬🇧</span> <span id="m-location">Location</span> 📍
+      </div>
+
+      <!-- Interactive Map Box -->
+      <div id="map-container"></div>
+
+      <h4>Fun Facts & Heritage:</h4>
+      <ul class="fun-facts" id="m-facts"></ul>
+    </div>
+  </div>
+
+  <!-- Leaflet JavaScript -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    const basePath = "/Users/richarddaniels/Desktop/FTP/";
+
+    let map = null;
+    let currentMarker = null;
+    let activeCoords = [51.6008, -0.1873];
+
+    const familyData = {
+      p1: {
+        name: "Steven Daniels",
+        relation: "Grandpa",
+        image: basePath + "SMD.jpeg",
+        flag: "🇬🇧",
+        location: "Stanmore, UK",
+        coords: [51.6183, -0.3168],
+        facts: [
+          "Loves working with numbers and finance.",
+          "Enjoys hitting the golf course on weekends.",
+          "Tells great stories to the grandkids."
+        ]
+      },
+      p2: {
+        name: "Sonya Daniels",
+        relation: "Savta",
+        image: basePath + "SD.jpeg",
+        flag: "🇬🇧",
+        location: "Stanmore, UK",
+        coords: [51.6183, -0.3168],
+        facts: [
+          "Brought so much warmth and love to the family.",
+          "Loved preparing special family meals.",
+          "Always cherished family time together."
+        ]
+      },
+      p8: {
+        name: "Michael Hakimian",
+        relation: "Baba",
+        image: basePath + "MH.jpeg",
+        flag: "🇮🇷",
+        location: "Tehran, Iran",
+        coords: [35.6892, 51.3890],
+        facts: [
+          "Loves playing backgammon and chess.",
+          "Pearl expert.",
+          "Passionate about dancing to Bella Ciao."
+        ]
+      },
+      p9: {
+        name: "Dalia Hakimian",
+        relation: "Nonna",
+        image: basePath + "DH.jpeg",
+        flag: "🇬🇧",
+        location: "Hendon, UK",
+        coords: [51.5830, -0.2274],
+        facts: [
+          "Owns the house. Nonna's house. Only.",
+          "Finds the best colouring in sheets on the internet.",
+          "Yellow chicken queen"
+        ]
+      },
+      p3: {
+        name: "Richard Daniels",
+        relation: "Daddy",
+        image: basePath + "RAD.jpeg",
+        flag: "🇬🇧",
+        location: "Pinner, UK",
+        coords: [51.5936, -0.3807],
+        facts: [
+          "Loves playing and coaching football.",
+          "Enjoys outdoor grilling and making fresh pizza.",
+          "Works hard taking care of kids as a doctor."
+        ]
+      },
+      p4: {
+        name: "Isabella Daniels",
+        relation: "Mummy",
+        image: basePath + "ISD.jpeg",
+        flag: "🇬🇧",
+        location: "Finchley, UK",
+        coords: [51.6008, -0.1873],
+        facts: [
+          "Works as a marketing director.",
+          "Plans awesome family trips and outings.",
+          "Loves reading and outdoor family walks."
+        ]
+      },
+      p5: {
+        name: "Jesse Daniels",
+        relation: "First son",
+        image: basePath + "JSD.jpeg",
+        flag: "🇬🇧",
+        location: "Finchley, UK",
+        coords: [51.6008, -0.1873],
+        facts: [
+          "The eldest brother leading the team!",
+          "Loves sports, gaming, and building with LEGO.",
+          "Always ready for an adventure."
+        ]
+      },
+      p6: {
+        name: "Jonah Daniels",
+        relation: "Second son",
+        image: basePath + "JID.jpeg",
+        flag: "🇬🇧",
+        location: "Finchley, UK",
+        coords: [51.6008, -0.1873],
+        facts: [
+          "Full of energy and loves playing outdoors.",
+          "Enjoys creative drawing and fun games.",
+          "Great teammate to his brothers."
+        ]
+      },
+      p7: {
+        name: "Judah Daniels",
+        relation: "Third son",
+        image: basePath + "JJd.jpeg",
+        flag: "🇬🇧",
+        location: "Finchley, UK",
+        coords: [51.6008, -0.1873],
+        facts: [
+          "The youngest brother of the group!",
+          "Loves music, toys, and big smiles.",
+          "Always bringing joy to the house."
+        ]
+      }
+    };
+
+    function initMap() {
+      if (!map) {
+        map = L.map('map-container').setView(activeCoords, 11);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap'
+        }).addTo(map);
+      }
+    }
+
+    function showDetails(id) {
+      const person = familyData[id];
+      if (!person) return;
+
+      document.getElementById('m-avatar').innerHTML = `<img src="${person.image}" alt="${person.name}">`;
+      document.getElementById('m-name').innerText = person.name;
+      document.getElementById('m-relation').innerText = person.relation;
+      document.getElementById('m-flag').innerText = person.flag;
+      document.getElementById('m-location').innerText = person.location;
+
+      activeCoords = person.coords;
+
+      const factsList = document.getElementById('m-facts');
+      factsList.innerHTML = '';
+      person.facts.forEach(fact => {
+        const li = document.createElement('li');
+        li.innerText = fact;
+        factsList.appendChild(li);
+      });
+
+      document.getElementById('modal').style.display = 'flex';
+
+      // Initialize or update Leaflet map
+      setTimeout(() => {
+        initMap();
+        map.invalidateSize();
+        
+        // Zoom out for international location (Tehran), closer for local UK locations
+        const zoomLevel = person.location.includes("Iran") ? 6 : 12;
+        map.setView(activeCoords, zoomLevel);
+
+        if (currentMarker) {
+          map.removeLayer(currentMarker);
+        }
+        currentMarker = L.marker(activeCoords).addTo(map)
+          .bindPopup(`<b>${person.name}</b><br>${person.location}`)
+          .openPopup();
+      }, 100);
+    }
+
+    function recenterMap() {
+      if (map && activeCoords) {
+        const zoomLevel = activeCoords[0] === 35.6892 ? 6 : 12;
+        map.flyTo(activeCoords, zoomLevel, { duration: 1 });
+      }
+    }
+
+    function closeModal(event) {
+      document.getElementById('modal').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
