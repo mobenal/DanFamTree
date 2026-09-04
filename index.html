@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Our Family Tree & Heritage</title>
   
-  <!-- Leaflet CSS for Interactive Map -->
+  <!-- Leaflet CSS for Interactive Maps -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
   <style>
@@ -225,9 +225,9 @@
       background: #fff;
       padding: 25px;
       border-radius: 15px;
-      max-width: 420px;
-      width: 90%;
-      max-height: 85vh;
+      max-width: 520px;
+      width: 92%;
+      max-height: 88vh;
       overflow-y: auto;
       position: relative;
       box-shadow: 0 10px 25px rgba(0,0,0,0.3);
@@ -252,7 +252,7 @@
       display: flex;
       align-items: center;
       gap: 15px;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
     }
 
     .modal-avatar {
@@ -268,28 +268,85 @@
       font-size: 2rem;
     }
 
-    .heritage-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: #e8f5e9;
-      color: var(--accent-color);
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: bold;
-      margin-bottom: 10px;
-      cursor: pointer;
-      border: 1px solid var(--border-color);
+    .modal-title-area {
+      display: flex;
+      flex-direction: column;
     }
 
-    #map-container {
-      width: 100%;
-      height: 180px;
-      border-radius: 10px;
-      margin-top: 10px;
+    .hebrew-name {
+      font-family: 'SBL Hebrew', 'Taamey Frank CLM', 'Traditional Arabic', serif;
+      font-size: 1.15rem;
+      color: var(--accent-color);
+      direction: rtl;
+      font-weight: bold;
+      margin-top: 2px;
+    }
+
+    .relation-badge {
+      color: #666;
+      font-size: 0.85rem;
+      margin-top: 2px;
+    }
+
+    .dates-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      background: #f8f9fa;
+      border-left: 4px solid var(--accent-color);
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 0.82rem;
+      color: #444;
       margin-bottom: 15px;
-      border: 2px solid var(--border-color);
+    }
+
+    .date-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* SIDE-BY-SIDE MAPS LAYOUT */
+    .maps-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 15px;
+    }
+
+    .map-card {
+      background: #fdfdfd;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .map-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      margin-bottom: 6px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .map-card-header span.tag {
+      background: #e8f5e9;
+      color: var(--accent-color);
+      padding: 2px 6px;
+      border-radius: 12px;
+      font-size: 0.72rem;
+    }
+
+    .map-box {
+      width: 100%;
+      height: 140px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
       overflow: hidden;
     }
 
@@ -451,7 +508,7 @@
                     <li>
                       <div class="person-card" onclick="showDetails('p19')">
                         <div class="person-avatar"><img src="./MH2.jpeg" alt="Michael Hakimian" onerror="this.outerHTML='👶'"></div>
-                        <div class="person-name">Michael Hakimian</div>
+                        <div class="person-name">Michael (Mickey) Hakimian</div>
                         <div class="person-relation">1st Cousin</div>
                       </div>
                     </li>
@@ -495,21 +552,37 @@
   <div class="modal-overlay" id="modal" onclick="closeModal(event)">
     <div class="modal-content" onclick="event.stopPropagation()">
       <span class="close-btn" onclick="closeModal(event)">&times;</span>
+      
       <div class="modal-header">
         <div class="modal-avatar" id="m-avatar"></div>
-        <div>
-          <h2 id="m-name" style="margin:0;">Name</h2>
-          <div id="m-relation" style="color:#666; font-size:0.9rem;">Relation</div>
+        <div class="modal-title-area">
+          <h2 id="m-name" style="margin:0; line-height: 1.2;">Name</h2>
+          <div id="m-hebrew" class="hebrew-name">שם עברי</div>
+          <div id="m-relation" class="relation-badge">Relation</div>
         </div>
       </div>
 
-      <div class="heritage-tag" id="m-heritage" onclick="recenterMap()">
-        <span id="m-flag">🇬🇧</span> <span id="m-location">Location</span> 📍
+      <div id="m-dates" class="dates-bar"></div>
+
+      <!-- SIDE-BY-SIDE MAPS -->
+      <div class="maps-grid">
+        <div class="map-card">
+          <div class="map-card-header">
+            <span>👶 Origin</span>
+            <span class="tag" id="m-origin-loc">Location</span>
+          </div>
+          <div id="map-origin" class="map-box"></div>
+        </div>
+        <div class="map-card">
+          <div class="map-card-header">
+            <span>🏡 Lives</span>
+            <span class="tag" id="m-lives-loc">Location</span>
+          </div>
+          <div id="map-lives" class="map-box"></div>
+        </div>
       </div>
 
-      <div id="map-container"></div>
-
-      <h4>Fun Facts & Heritage:</h4>
+      <h4 style="margin-top: 10px; margin-bottom: 5px;">Fun Facts & Heritage:</h4>
       <ul class="fun-facts" id="m-facts"></ul>
     </div>
   </div>
@@ -520,31 +593,42 @@
   <script>
     const basePath = "./";
 
-    let map = null;
-    let currentMarker = null;
-    let activeCoords = [51.6008, -0.1873];
+    let originMap = null;
+    let livesMap = null;
+    let originMarker = null;
+    let livesMarker = null;
 
     const familyData = {
       p1: {
         name: "Steven Daniels",
+        hebrewName: "מאיר בן שלמה ישעיה ומאשה",
         relation: "Grandpa",
+        dob: "23 December 1959",
+        weddingDate: "3 July 1984",
+        dod: null,
         image: basePath + "SMD.jpeg",
-        flag: "🇬🇧",
-        location: "Stanmore, UK",
-        coords: [51.6183, -0.3168],
+        originLocation: "Stanmore, UK",
+        originCoords: [51.6183, -0.3168],
+        livesLocation: "Pinner, UK",
+        livesCoords: [51.5936, -0.3807],
         facts: [
           "Loves working with numbers and finance.",
-          "Enjoys hitting the golf course on weekends.",
-          "Tells great stories to the grandkids."
+          "The OG Arsenal fan",
+          "Tells great pirate stories to the grandkids."
         ]
       },
       p2: {
         name: "Sonya Daniels",
+        hebrewName: "יפה עדינה בת מיכאל ואלקה",
         relation: "Savta",
+        dob: "30 November 1960",
+        weddingDate: "3 July 1984",
+        dod: "26 November 2020",
         image: basePath + "SD.jpeg",
-        flag: "🇬🇧",
-        location: "Stanmore, UK",
-        coords: [51.6183, -0.3168],
+        originLocation: "Stanmore, UK",
+        originCoords: [51.6183, -0.3168],
+        livesLocation: "Pinner, UK",
+        livesCoords: [51.5936, -0.3807],
         facts: [
           "Brought so much warmth and love to the family.",
           "Loved preparing special family meals.",
@@ -553,11 +637,16 @@
       },
       p8: {
         name: "Michael Hakimian",
+        hebrewName: "משה בן משיח ואסנת",
         relation: "Baba",
+        dob: "4 July 1958",
+        weddingDate: "26 June 1988",
+        dod: null,
         image: basePath + "MH.jpeg",
-        flag: "🇮🇷",
-        location: "Tehran, Iran",
-        coords: [35.6892, 51.3890],
+        originLocation: "Tehran, Iran",
+        originCoords: [35.6892, 51.3890],
+        livesLocation: "Finchley, UK",
+        livesCoords: [51.6008, -0.1873],
         facts: [
           "Loves playing backgammon and chess.",
           "Pearl expert.",
@@ -566,11 +655,16 @@
       },
       p9: {
         name: "Dalia Hakimian",
+        hebrewName: "דליה בת יוסף ואסתר",
         relation: "Nonna",
+        dob: "10 January 1970",
+        weddingDate: "26 June 1988",
+        dod: null,
         image: basePath + "DH.jpeg",
-        flag: "🇬🇧",
-        location: "Hendon, UK",
-        coords: [51.5830, -0.2274],
+        originLocation: "Finchley, UK",
+        originCoords: [51.6008, -0.1873],
+        livesLocation: "Finchley, UK",
+        livesCoords: [51.6008, -0.1873],
         facts: [
           "Owns the house. Nonna's house. Only.",
           "Finds the best colouring in sheets on the internet.",
@@ -579,11 +673,16 @@
       },
       p3: {
         name: "Richard Daniels",
+        hebrewName: "משולם משה בן מאיר ויפה עדינה",
         relation: "Daddy",
+        dob: "24 August 1988",
+        weddingDate: "21 July 2013",
+        dod: null,
         image: basePath + "RAD.jpeg",
-        flag: "🇬🇧",
-        location: "Pinner, UK",
-        coords: [51.5936, -0.3807],
+        originLocation: "Pinner, UK",
+        originCoords: [51.5936, -0.3807],
+        livesLocation: "Finchley, UK",
+        livesCoords: [51.6008, -0.1873],
         facts: [
           "Loves playing and coaching football.",
           "Enjoys outdoor grilling and making fresh pizza.",
@@ -592,11 +691,16 @@
       },
       p10: {
         name: "Joshua Daniels",
+        hebrewName: "יהושע אברהם בן מאיר ויפה עדינה",
         relation: "Uncle Josh",
+        dob: "1 October 1990",
+        weddingDate: "11 February 2024",
+        dod: null,
         image: basePath + "JD.jpeg",
-        flag: "🇬🇧",
-        location: "Pinner, UK",
-        coords: [51.5936, -0.3807],
+        originLocation: "Pinner, UK",
+        originCoords: [51.5936, -0.3807],
+        livesLocation: "Kilburn, UK",
+        livesCoords: [51.5432, -0.1983],
         facts: [
           "Ticketmaster was named after him",
           "Perpetually injured",
@@ -605,11 +709,16 @@
       },
       p11: {
         name: "Hannah Daniels",
+        hebrewName: "חנה מרים",
         relation: "Auntie Hannah",
+        dob: "3 May 1990",
+        weddingDate: "11 February 2024",
+        dod: null,
         image: basePath + "HD.jpeg",
-        flag: "🇬🇧",
-        location: "Leeds, UK",
-        coords: [53.8008, -1.5491],
+        originLocation: "Leeds, UK",
+        originCoords: [53.8008, -1.5491],
+        livesLocation: "Kilburn, UK",
+        livesCoords: [51.5432, -0.1983],
         facts: [
           "Had a pet polar bear growing up",
           "Catchphrase is Oyehclog",
@@ -618,11 +727,16 @@
       },
       p18: {
         name: "Kobi Daniels",
+        hebrewName: "ידיד יוני בן יהושע אברהם וחנה מרים",
         relation: "1st Cousin",
+        dob: "2 December 2025",
+        weddingDate: null,
+        dod: null,
         image: basePath + "KD.jpeg",
-        flag: "🇬🇧",
-        location: "Pinner, UK",
-        coords: [51.5936, -0.3807],
+        originLocation: "Kilburn, UK",
+        originCoords: [51.5432, -0.1983],
+        livesLocation: "Kilburn, UK",
+        livesCoords: [51.5432, -0.1983],
         facts: [
           "Son of Uncle Josh and Auntie Hannah.",
           "Loves playing with his cousins.",
@@ -631,11 +745,16 @@
       },
       p12: {
         name: "Zoe Daniels",
+        hebrewName: "רבקה גבריאלה בת מאיר ויפה עדינה",
         relation: "Auntie Zoe",
+        dob: "19 June 1997",
+        weddingDate: null,
+        dod: null,
         image: basePath + "ZD.jpeg",
-        flag: "🇬🇧🇮🇱",
-        location: "Pinner, UK",
-        coords: [51.5936, -0.3807],
+        originLocation: "Pinner, UK",
+        originCoords: [51.5936, -0.3807],
+        livesLocation: "Jerusalem, Israel",
+        livesCoords: [31.7683, 35.2137],
         facts: [
           "Loves helping people as an occupational therapist",
           "Passionate about the Yidden",
@@ -644,11 +763,16 @@
       },
       p4: {
         name: "Isabella Daniels",
+        hebrewName: "שרה בת משה ודליה",
         relation: "Mummy",
+        dob: "20 June 1989",
+        weddingDate: "21 July 2013",
+        dod: null,
         image: basePath + "ISD.jpeg",
-        flag: "🇬🇧",
-        location: "Finchley, UK",
-        coords: [51.6008, -0.1873],
+        originLocation: "Finchley, UK",
+        originCoords: [51.6008, -0.1873],
+        livesLocation: "Finchley, UK",
+        livesCoords: [51.6008, -0.1873],
         facts: [
           "Works as a marketing director.",
           "Plans awesome family trips and outings.",
@@ -657,11 +781,16 @@
       },
       p13: {
         name: "Danny Hakimian",
+        hebrewName: "משיח בן משה ודליה",
         relation: "Doi Danny",
+        dob: "22 August 1991",
+        weddingDate: "22 August 2019",
+        dod: null,
         image: basePath + "DH2.jpeg",
-        flag: "🇺🇸🇬🇧",
-        location: "Finchley, UK",
-        coords: [51.6008, -0.1873],
+        originLocation: "Finchley, UK",
+        originCoords: [51.6008, -0.1873],
+        livesLocation: "Aventura, Florida, USA",
+        livesCoords: [25.9565, -80.1392],
         facts: [
           "Scared of Ambient AI. And Spiders",
           "Hates recycling",
@@ -670,11 +799,16 @@
       },
       p14: {
         name: "Evette Hakimian",
+        hebrewName: "יוכבד",
         relation: "Auntie Evette",
+        dob: "31 December 1993",
+        weddingDate: "22 August 2019",
+        dod: null,
         image: basePath + "EH.jpeg",
-        flag: "🇺🇸",
-        location: "Cleveland, Ohio, USA",
-        coords: [41.4993, -81.6944],
+        originLocation: "Cleveland, Ohio, USA",
+        originCoords: [41.4993, -81.6944],
+        livesLocation: "Aventura, Florida, USA",
+        livesCoords: [25.9565, -80.1392],
         facts: [
           "Brings the party energy",
           "Only buys shoes in Temple Fortune",
@@ -682,12 +816,17 @@
         ]
       },
       p19: {
-        name: "Michael Hakimian",
+        name: "Michael (Mickey) Hakimian",
+        hebrewName: "משה בן משיח ויוכבד",
         relation: "1st Cousin",
+        dob: "30 October 2021",
+        weddingDate: null,
+        dod: null,
         image: basePath + "MH2.jpeg",
-        flag: "🇺🇸",
-        location: "Aventura, Florida, USA",
-        coords: [25.9565, -80.1392],
+        originLocation: "Deal, New Jersey, USA",
+        originCoords: [40.2443, -73.9996],
+        livesLocation: "Aventura, Florida, USA",
+        livesCoords: [25.9565, -80.1392],
         facts: [
           "Does not like singing at Nursery",
           "Named after his grandpa Baba Michael",
@@ -696,24 +835,34 @@
       },
       p15: {
         name: "Sammy Hakimian",
+        hebrewName: "יוסף בן משה ודליה",
         relation: "Uncle Sam",
+        dob: "15 June 1995",
+        weddingDate: "21 August 2025",
+        dod: null,
         image: basePath + "SH.jpeg",
-        flag: "🇬🇧",
-        location: "Finchley, UK",
-        coords: [51.6008, -0.1873],
+        originLocation: "Finchley, UK",
+        originCoords: [51.6008, -0.1873],
+        livesLocation: "New York City, USA",
+        livesCoords: [40.7128, -74.0060],
         facts: [
           "Will fuse any foods together.",
           "Likes tea; hates coffee",
-          "Thinks he's better at sheshbesh than he is"
+          "Thinks he's better at sheshbesh than he really is"
         ]
       },
       p16: {
         name: "Britney Hakimian",
+        hebrewName: "אשירה",
         relation: "Auntie Brit",
+        dob: "1 February 1997",
+        weddingDate: "21 August 2025",
+        dod: null,
         image: basePath + "BH.jpeg",
-        flag: "🇺🇸",
-        location: "Westchester, NY, USA",
-        coords: [41.1220, -73.7949],
+        originLocation: "Westchester, New York, USA",
+        originCoords: [41.1220, -73.7949],
+        livesLocation: "New York City, USA",
+        livesCoords: [40.7128, -74.0060],
         facts: [
           "Apparently doesn't really like Ladbroke Grove",
           "Does like Italy though",
@@ -722,11 +871,16 @@
       },
       p17: {
         name: "Sofia Hakimian",
+        hebrewName: "אסתר בת משה ודליה",
         relation: "Bia",
+        dob: "31 August 2005",
+        weddingDate: null,
+        dod: null,
         image: basePath + "SO.jpeg",
-        flag: "🇬🇧",
-        location: "Finchley, UK",
-        coords: [51.6008, -0.1873],
+        originLocation: "Finchley, UK",
+        originCoords: [51.6008, -0.1873],
+        livesLocation: "Finchley, UK",
+        livesCoords: [51.6008, -0.1873],
         facts: [
           "Excellent airplane babysitter",
           "Brings solutions, not problems",
@@ -735,11 +889,16 @@
       },
       p5: {
         name: "Jesse Daniels",
+        hebrewName: "ישי שלמה בן משולם משה ושרה",
         relation: "First Son",
+        dob: "4 September 2017",
+        weddingDate: null,
+        dod: null,
         image: basePath + "JSD.jpeg",
-        flag: "🇬🇧",
-        location: "Finchley, UK",
-        coords: [51.6008, -0.1873],
+        originLocation: "Finchley, UK",
+        originCoords: [51.6008, -0.1873],
+        livesLocation: "Finchley, UK",
+        livesCoords: [51.6008, -0.1873],
         facts: [
           "The eldest brother leading the team!",
           "Loves sports, gaming, and building with LEGO.",
@@ -748,11 +907,16 @@
       },
       p6: {
         name: "Jonah Daniels",
+        hebrewName: "יונה אילן בן משולם משה ושרה",
         relation: "Second Son",
+        dob: "17 February 2020",
+        weddingDate: null,
+        dod: null,
         image: basePath + "JID.jpeg",
-        flag: "🇬🇧",
-        location: "Finchley, UK",
-        coords: [51.6008, -0.1873],
+        originLocation: "Finchley, UK",
+        originCoords: [51.6008, -0.1873],
+        livesLocation: "Finchley, UK",
+        livesCoords: [51.6008, -0.1873],
         facts: [
           "Full of energy and loves playing outdoors.",
           "Enjoys creative drawing and fun games.",
@@ -761,11 +925,16 @@
       },
       p7: {
         name: "Judah Daniels",
+        hebrewName: "יהודה יוסף בן משולם משה ושרה",
         relation: "Third Son",
+        dob: "15 February 2025",
+        weddingDate: null,
+        dod: null,
         image: basePath + "JJd.jpeg",
-        flag: "🇬🇧",
-        location: "Finchley, UK",
-        coords: [51.6008, -0.1873],
+        originLocation: "Finchley, UK",
+        originCoords: [51.6008, -0.1873],
+        livesLocation: "Finchley, UK",
+        livesCoords: [51.6008, -0.1873],
         facts: [
           "The youngest brother of the group!",
           "Loves music, toys, and big smiles.",
@@ -774,13 +943,53 @@
       }
     };
 
-    function initMap() {
-      if (!map) {
-        map = L.map('map-container').setView(activeCoords, 11);
+    function initMaps() {
+      if (!originMap) {
+        originMap = L.map('map-origin', { zoomControl: false }).setView([51.5074, -0.1278], 8);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '© OpenStreetMap'
-        }).addTo(map);
+          attribution: ''
+        }).addTo(originMap);
       }
+      if (!livesMap) {
+        livesMap = L.map('map-lives', { zoomControl: false }).setView([51.5074, -0.1278], 8);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: ''
+        }).addTo(livesMap);
+      }
+    }
+
+    function calculateAge(dobString, dodString = null) {
+      if (!dobString) return null;
+
+      const birthDate = new Date(dobString);
+      if (isNaN(birthDate.getTime())) return null;
+
+      const endDate = dodString ? new Date(dodString) : new Date();
+      
+      let years = endDate.getFullYear() - birthDate.getFullYear();
+      let months = endDate.getMonth() - birthDate.getMonth();
+      const days = endDate.getDate() - birthDate.getDate();
+
+      if (days < 0) {
+        months--;
+      }
+      if (months < 0) {
+        years--;
+        months += 12;
+      }
+
+      if (years === 0) {
+        return months === 1 ? "1 month old" : `${months} months old`;
+      }
+
+      return `${years} yrs old`;
+    }
+
+    function getZoomLevel(location) {
+      if (location.includes("USA") || location.includes("Iran") || location.includes("Israel")) {
+        return 6;
+      }
+      return 11;
     }
 
     function showDetails(id) {
@@ -790,11 +999,40 @@
       document.getElementById('m-avatar').innerHTML = `<img src="${person.image}" alt="${person.name}" onerror="this.outerHTML='👤'">`;
       document.getElementById('m-name').innerText = person.name;
       document.getElementById('m-relation').innerText = person.relation;
-      document.getElementById('m-flag').innerText = person.flag;
-      document.getElementById('m-location').innerText = person.location;
 
-      activeCoords = person.coords;
+      // Hebrew Name
+      const hebrewElem = document.getElementById('m-hebrew');
+      if (person.hebrewName) {
+        hebrewElem.innerText = person.hebrewName;
+        hebrewElem.style.display = 'block';
+      } else {
+        hebrewElem.style.display = 'none';
+      }
 
+      // Dates & Age
+      const datesContainer = document.getElementById('m-dates');
+      let datesHTML = '';
+
+      if (person.dob) {
+        const ageText = calculateAge(person.dob, person.dod);
+        const ageBadge = ageText ? ` <span style="color:#2e7d32; font-weight:bold;">(${ageText})</span>` : '';
+        datesHTML += `<div class="date-item">🎂 <b>Born:</b> ${person.dob}${ageBadge}</div>`;
+      }
+      if (person.weddingDate) {
+        datesHTML += `<div class="date-item">💍 <b>Married:</b> ${person.weddingDate}</div>`;
+      }
+      if (person.dod) {
+        datesHTML += `<div class="date-item">🕯️ <b>Passed:</b> ${person.dod}</div>`;
+      }
+
+      datesContainer.innerHTML = datesHTML;
+      datesContainer.style.display = datesHTML ? 'flex' : 'none';
+
+      // Update location titles
+      document.getElementById('m-origin-loc').innerText = person.originLocation;
+      document.getElementById('m-lives-loc').innerText = person.livesLocation;
+
+      // Facts
       const factsList = document.getElementById('m-facts');
       factsList.innerHTML = '';
       person.facts.forEach(fact => {
@@ -807,32 +1045,26 @@
       modal.style.display = 'flex';
 
       setTimeout(() => {
-        initMap();
-        map.invalidateSize();
+        initMaps();
         
-        const isUS = person.location.includes("USA");
-        const isIran = person.location.includes("Iran");
-        const zoomLevel = (isUS || isIran) ? 7 : 12;
+        originMap.invalidateSize();
+        livesMap.invalidateSize();
 
-        map.setView(activeCoords, zoomLevel);
+        const originZoom = getZoomLevel(person.originLocation);
+        const livesZoom = getZoomLevel(person.livesLocation);
 
-        if (currentMarker) {
-          map.removeLayer(currentMarker);
-        }
-        currentMarker = L.marker(activeCoords).addTo(map)
-          .bindPopup(`<b>${person.name}</b><br>${person.location}`)
-          .openPopup();
+        originMap.setView(person.originCoords, originZoom);
+        livesMap.setView(person.livesCoords, livesZoom);
+
+        if (originMarker) originMap.removeLayer(originMarker);
+        if (livesMarker) livesMap.removeLayer(livesMarker);
+
+        originMarker = L.marker(person.originCoords).addTo(originMap)
+          .bindPopup(`<b>Born:</b> ${person.originLocation}`);
+        
+        livesMarker = L.marker(person.livesCoords).addTo(livesMap)
+          .bindPopup(`<b>Lives:</b> ${person.livesLocation}`);
       }, 100);
-    }
-
-    function recenterMap() {
-      if (map && activeCoords) {
-        const isUS = activeCoords[1] < -50;
-        const isIran = activeCoords[0] === 35.6892;
-        const zoomLevel = (isUS || isIran) ? 7 : 12;
-
-        map.flyTo(activeCoords, zoomLevel, { duration: 1 });
-      }
     }
 
     function closeModal(event) {
